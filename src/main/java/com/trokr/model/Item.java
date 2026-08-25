@@ -43,6 +43,9 @@ public class Item {
     @Column(nullable = false)
     private String descricao;
 
+    @Column(nullable = false)
+    private String tipo;
+
     // Relação unidirecional de propósito: Item conhece seu dono, mas Usuario
     // não mantém uma coleção de itens. Evita decisões de cascade/fetch que
     // ainda não fazem sentido discutir nesta fase do curso.

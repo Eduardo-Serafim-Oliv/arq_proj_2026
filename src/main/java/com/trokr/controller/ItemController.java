@@ -9,14 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/itens")
@@ -37,11 +30,33 @@ public class ItemController {
         return ItemResponseDTO.fromEntity(itemService.buscarPorId(id));
     }
 
+    @GetMapping("/buscar")
+    public List<ItemResponseDTO> listarPorTitulo(@RequestParam("titulo") String titulo){
+        return itemService.listarPorTitulo(titulo).stream()
+                .map(ItemResponseDTO::fromEntity)
+                .toList();
+    }
+
+    @GetMapping("/buscar-tipo")
+    public List<ItemResponseDTO> listarPorTipo(@RequestParam("tipo") String tipo){
+        return itemService.listarPorTipo(tipo).stream()
+                .map(ItemResponseDTO::fromEntity)
+                .toList();
+    }
+
+    @GetMapping("/buscar-itens-usuario/{id}")
+    public List<ItemResponseDTO> listarPorProprietario(@PathVariable Long id){
+        return itemService.listarPorUsuarioProprietario(id).stream()
+                .map(ItemResponseDTO::fromEntity)
+                .toList();
+    }
+
     @PostMapping
     public ResponseEntity<ItemResponseDTO> criar(@Valid @RequestBody ItemRequestDTO dto) {
         Item item = new Item();
         item.setTitulo(dto.titulo());
         item.setDescricao(dto.descricao());
+        item.setTipo(dto.tipo());
 
         Item salvo = itemService.criar(item, dto.usuarioId());
         return ResponseEntity.status(HttpStatus.CREATED).body(ItemResponseDTO.fromEntity(salvo));
@@ -52,6 +67,7 @@ public class ItemController {
         Item dadosAtualizados = new Item();
         dadosAtualizados.setTitulo(dto.titulo());
         dadosAtualizados.setDescricao(dto.descricao());
+        dadosAtualizados.setTipo(dto.tipo());
 
         return ItemResponseDTO.fromEntity(itemService.atualizar(id, dadosAtualizados, dto.usuarioId()));
     }
@@ -61,4 +77,5 @@ public class ItemController {
         itemService.remover(id);
         return ResponseEntity.noContent().build();
     }
+
 }

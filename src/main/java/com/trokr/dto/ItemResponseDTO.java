@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public record ItemResponseDTO(
         Long id,
         String titulo,
+        String tipo,
         String descricao,
         Long usuarioId,
         String usuarioNome,
@@ -21,6 +22,7 @@ public record ItemResponseDTO(
         return new ItemResponseDTO(
                 item.getId(),
                 item.getTitulo(),
+                item.getTipo(),
                 item.getDescricao(),
                 item.getUsuarioProprietario().getId(),
                 item.getUsuarioProprietario().getNome(),

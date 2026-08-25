@@ -1,5 +1,6 @@
 package com.trokr.controller;
 
+import com.trokr.dto.ItemResponseDTO;
 import com.trokr.dto.UsuarioRequestDTO;
 import com.trokr.dto.UsuarioResponseDTO;
 import com.trokr.model.Usuario;
@@ -9,14 +10,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -42,6 +36,7 @@ public class UsuarioController {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
+        usuario.setCidade(dto.cidade());
 
         Usuario salvo = usuarioService.criar(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioResponseDTO.fromEntity(salvo));
@@ -52,6 +47,7 @@ public class UsuarioController {
         Usuario dadosAtualizados = new Usuario();
         dadosAtualizados.setNome(dto.nome());
         dadosAtualizados.setEmail(dto.email());
+        dadosAtualizados.setCidade(dto.cidade());
 
         return UsuarioResponseDTO.fromEntity(usuarioService.atualizar(id, dadosAtualizados));
     }
@@ -61,4 +57,17 @@ public class UsuarioController {
         usuarioService.remover(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/buscar")
+    public UsuarioResponseDTO buscarPorEmail(@RequestParam("email") String email) {
+        return UsuarioResponseDTO.fromEntity(usuarioService.buscarPorEmail(email));
+    }
+    @GetMapping("/buscar-nome")
+    public List<UsuarioResponseDTO> buscarPorNome(@RequestParam("nome") String nome) {
+        return usuarioService.listarPorNome(nome).stream()
+                .map(UsuarioResponseDTO::fromEntity)
+                .toList();
+    }
+
+
 }

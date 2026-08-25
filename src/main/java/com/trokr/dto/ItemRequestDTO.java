@@ -18,6 +18,9 @@ public record ItemRequestDTO(
         String descricao,
 
         @NotNull(message = "usuarioId é obrigatório")
-        Long usuarioId
+        Long usuarioId,
+
+        @NotNull(message = "tipo é obrigatório")
+        String tipo
 ) {
 }

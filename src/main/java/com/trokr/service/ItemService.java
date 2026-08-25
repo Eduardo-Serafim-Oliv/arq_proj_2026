@@ -24,6 +24,16 @@ public class ItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("Item não encontrado com id " + id));
     }
 
+    public List<Item> listarPorTitulo(String titulo) {
+        return itemRepository.findByTituloContainingIgnoreCase(titulo);
+    }
+    public List<Item> listarPorTipo(String tipo) {
+        return itemRepository.findByTipoIgnoreCase(tipo);
+    }
+    public List<Item> listarPorUsuarioProprietario(Long usuarioId) {
+        return itemRepository.findByUsuarioProprietarioId(usuarioId);
+    }
+
     public Item criar(Item item, Long usuarioId) {
         Usuario dono = usuarioService.buscarPorId(usuarioId);
         item.setUsuarioProprietario(dono);
@@ -35,6 +45,7 @@ public class ItemService {
         Usuario dono = usuarioService.buscarPorId(usuarioId);
         itemExistente.setTitulo(dadosAtualizados.getTitulo());
         itemExistente.setDescricao(dadosAtualizados.getDescricao());
+        itemExistente.setTipo(dadosAtualizados.getTipo());
         itemExistente.setUsuarioProprietario(dono);
         return itemRepository.save(itemExistente);
     }
@@ -43,4 +54,9 @@ public class ItemService {
         Item item = buscarPorId(id);
         itemRepository.delete(item);
     }
+
+//    public Long ContarItens() {
+//        return itemRepository.count();
+//    }
+
 }

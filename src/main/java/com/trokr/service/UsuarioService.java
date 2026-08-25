@@ -19,9 +19,17 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    public List<Usuario> listarPorNome(String nome) {
+        return usuarioRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario não encontrado com id " + id));
+    }
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com email: " + email));
     }
 
     public Usuario criar(Usuario usuario) {
@@ -32,6 +40,7 @@ public class UsuarioService {
         Usuario usuarioExistente = buscarPorId(id);
         usuarioExistente.setNome(dadosAtualizados.getNome());
         usuarioExistente.setEmail(dadosAtualizados.getEmail());
+        usuarioExistente.setCidade(dadosAtualizados.getCidade());
         return usuarioRepository.save(usuarioExistente);
     }
 
@@ -39,4 +48,5 @@ public class UsuarioService {
         Usuario usuario = buscarPorId(id);
         usuarioRepository.delete(usuario);
     }
+
 }
