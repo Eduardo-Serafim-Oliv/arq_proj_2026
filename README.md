@@ -107,7 +107,7 @@ Decisões desta fase que valem explicar:
 - **`Item` é uma entidade genérica** — ainda não existe distinção entre
   produto físico, serviço ou aula, e não existe conceito de "Proposta de
   Troca" ligando dois itens. Isso é conteúdo de aulas futuras.
-- **Relação `Item → Usuario` é unidirecional**: o item conhece seu dono, mas
+- **Relação `Item → Usuario` é unidirecional**: o proposta conhece seu dono, mas
   `Usuario` não guarda uma lista de itens. Evita decisões de cascade/fetch
   type que ainda não fazem sentido discutir nesta fase.
 - **Tratamento de erro é só um `@ExceptionHandler` genérico** para "não
@@ -182,10 +182,10 @@ GET /actuator/health
 | Método | Rota          | Descrição            |
 |--------|---------------|------------------------|
 | GET    | `/itens`      | Lista todos os itens |
-| GET    | `/itens/{id}` | Busca um item por id |
-| POST   | `/itens`      | Cria um item          |
-| PUT    | `/itens/{id}` | Atualiza um item      |
-| DELETE | `/itens/{id}` | Remove um item        |
+| GET    | `/itens/{id}` | Busca um proposta por id |
+| POST   | `/itens`      | Cria um proposta          |
+| PUT    | `/itens/{id}` | Atualiza um proposta      |
+| DELETE | `/itens/{id}` | Remove um proposta        |
 
 **Request — `POST /itens`**
 
@@ -214,8 +214,8 @@ GET /actuator/health
 
 - `400 Bad Request`: dados de entrada inválidos (ex.: `email` fora do
   formato, campo obrigatório em branco)
-- `404 Not Found`: id de `usuario`/`item` inexistente, incluindo quando
-  `usuarioId` informado ao criar/atualizar um item não existe
+- `404 Not Found`: id de `usuario`/`proposta` inexistente, incluindo quando
+  `usuarioId` informado ao criar/atualizar um proposta não existe
 
 ```json
 { "erro": "Usuario não encontrado com id 999" }
