@@ -1,0 +1,37 @@
+package com.trokr.model.state;
+
+import com.trokr.model.Proposta;
+import com.trokr.model.StatusProposta;
+
+public class EstadoRecusado implements EstadoContraProposta {
+
+    @Override
+    public void enviarParaAnalise(Proposta proposta) {
+        throw new IllegalStateException("Operação inválida!");
+    }
+
+    @Override
+    public void aceitar(Proposta proposta) {
+        throw new IllegalStateException("Operação inválida!");
+    }
+
+    @Override
+    public void recusar(Proposta proposta) {
+        throw new IllegalStateException("Operação inválida!");
+    }
+
+    @Override
+    public void finalizar(Proposta proposta) {
+        throw new IllegalStateException("Operação inválida!");
+    }
+
+    @Override
+    public void cancelar(Proposta proposta) {
+        throw new IllegalStateException("Operação inválida!");
+    }
+
+    @Override
+    public StatusProposta getStatus() {
+        return StatusProposta.RECUSADO;
+    }
+}

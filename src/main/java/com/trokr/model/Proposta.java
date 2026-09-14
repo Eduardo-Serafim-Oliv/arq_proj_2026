@@ -1,7 +1,7 @@
 package com.trokr.model;
 
-import com.trokr.model.state.EstadoProposta;
-import com.trokr.model.state.EstadoRascunho;
+import com.trokr.model.state.proposta.EstadoProposta;
+import com.trokr.model.state.proposta.EstadoRascunho;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -46,10 +46,21 @@ public class Proposta {
     @Transient
     private EstadoProposta estadoAtual = new EstadoRascunho();
 
+    @Transient
+    private EstadoPropostaRaiz estadoRaiz;
+
+    @Transient
+    private EstadoContraProposta estadoContraProposta;
+
+
+//    public boolean isRaiz(){
+//        return propostaAnterior == null;
+//    }
+
     public void mudarEstadoPara(EstadoProposta novoEstado) {
         this.estadoAtual = novoEstado;
         this.status = novoEstado.getStatus();
-    }
+    }//    Criar esse metodo para proposta raiz e para contraProposta
 
     public void enviarParaHomologacao() {
         this.estadoAtual.enviarParaHomologacao(this);

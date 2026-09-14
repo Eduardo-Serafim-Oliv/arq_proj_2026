@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
  * já que ainda não existe autenticação para inferir isso a partir de quem
  * está logado.
  */
-public record ItemRequestDTO(
+public record PropostaRequestDTO(
 
         @NotBlank(message = "titulo é obrigatório")
         String titulo,

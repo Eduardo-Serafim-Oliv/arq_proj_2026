@@ -1,4 +1,4 @@
-package com.trokr.model.state;
+package com.trokr.model.state.proposta;
 
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
