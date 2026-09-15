@@ -2,15 +2,13 @@ package com.trokr.model.state.contraproposta;
 
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
-import com.trokr.model.state.proposta.EstadoAtivo;
-import com.trokr.model.state.proposta.EstadoFinalizado;
 import com.trokr.model.state.proposta.EstadoProposta;
 
-public class EstadoNegociado implements EstadoContraProposta {
+public class EstadoRascunhoContra implements EstadoContraProposta {
 
-    /@Override
+    @Override
     public void enviarParaAnalise(Proposta proposta) {
-        throw new IllegalStateException("Operação inválida!");
+        proposta.mudarEstadoContraPara(new EstadoEmAnalise());
     }
 
     @Override
@@ -20,21 +18,22 @@ public class EstadoNegociado implements EstadoContraProposta {
 
     @Override
     public void recusar(Proposta proposta) {
-        proposta.mudarEstadoContraPara(new EstadoRecusado());
-    }
-
-    @Override
-    public void finalizar(Proposta proposta) {
-        proposta.mudarEstadoContraPara(new EstadoFinalizadoContra());
-    }
-
-    @Override
-    public void cancelar(Proposta proposta) {
         throw new IllegalStateException("Operação inválida!");
     }
 
     @Override
-    public StatusProposta getStatus() {
-        return StatusProposta.NEGOCIADO_CONTRA;
+    public void finalizar(Proposta proposta) {
+        throw new IllegalStateException("Operação inválida!");
     }
+
+    @Override
+    public void cancelar(Proposta proposta) {
+        proposta.mudarEstadoContraPara(new EstadoCanceladoContra());
+    }
+
+    @Override
+    public StatusProposta getStatus() {
+        return StatusProposta.RASCUNHO;
+    }
+
 }

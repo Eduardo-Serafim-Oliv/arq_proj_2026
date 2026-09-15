@@ -2,6 +2,7 @@ package com.trokr.model.state;
 
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
+import com.trokr.model.state.contraproposta.EstadoContraProposta;
 
 public class EstadoRecusado implements EstadoContraProposta {
 

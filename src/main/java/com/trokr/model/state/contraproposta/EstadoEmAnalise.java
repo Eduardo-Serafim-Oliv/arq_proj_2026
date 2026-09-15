@@ -1,7 +1,11 @@
-package com.trokr.model.state;
+package com.trokr.model.state.contraproposta;
 
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
+import com.trokr.model.state.EstadoRecusado;
+import com.trokr.model.state.contraproposta.EstadoCanceladoContra;
+import com.trokr.model.state.contraproposta.EstadoContraProposta;
+import com.trokr.model.state.contraproposta.EstadoNegociadoContra;
 
 public class EstadoEmAnalise implements EstadoContraProposta {
 

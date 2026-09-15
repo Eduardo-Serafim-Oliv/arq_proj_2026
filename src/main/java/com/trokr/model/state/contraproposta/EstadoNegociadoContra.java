@@ -2,9 +2,9 @@ package com.trokr.model.state.contraproposta;
 
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
-import com.trokr.model.state.proposta.EstadoProposta;
+import com.trokr.model.state.EstadoRecusado;
 
-public class EstadoFinalizado implements EstadoContraProposta {
+public class EstadoNegociadoContra implements EstadoContraProposta {
 
     @Override
     public void enviarParaAnalise(Proposta proposta) {
@@ -18,12 +18,12 @@ public class EstadoFinalizado implements EstadoContraProposta {
 
     @Override
     public void recusar(Proposta proposta) {
-        throw new IllegalStateException("Operação inválida!");
+        proposta.mudarEstadoContraPara(new EstadoRecusado());
     }
 
     @Override
     public void finalizar(Proposta proposta) {
-        throw new IllegalStateException("Operação inválida!");
+        proposta.mudarEstadoContraPara(new EstadoFinalizadoContra());
     }
 
     @Override
@@ -33,6 +33,6 @@ public class EstadoFinalizado implements EstadoContraProposta {
 
     @Override
     public StatusProposta getStatus() {
-        return StatusProposta.FINALIZADO_CONTRA;
+        return StatusProposta.NEGOCIADO_CONTRA;
     }
 }

@@ -2,9 +2,8 @@ package com.trokr.model.state.contraproposta;
 
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
-import com.trokr.model.state.proposta.EstadoProposta;
 
-public class EstadoCancelado implements EstadoProposta {
+public class EstadoFinalizadoContra implements EstadoContraProposta {
 
     @Override
     public void enviarParaAnalise(Proposta proposta) {
@@ -33,6 +32,6 @@ public class EstadoCancelado implements EstadoProposta {
 
     @Override
     public StatusProposta getStatus() {
-        return StatusProposta.CANCELADO_CONTRA;
+        return StatusProposta.FINALIZADO_CONTRA;
     }
 }

@@ -4,11 +4,11 @@ import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
 import com.trokr.model.state.proposta.EstadoProposta;
 
-public class EstadoRascunho implements EstadoProposta {
+public class EstadoCanceladoContra implements EstadoContraProposta {
 
     @Override
     public void enviarParaAnalise(Proposta proposta) {
-        proposta.mudarEstadoContraPara(new EstadoEmAnalise());
+        throw new IllegalStateException("Operação inválida!");
     }
 
     @Override
@@ -28,12 +28,11 @@ public class EstadoRascunho implements EstadoProposta {
 
     @Override
     public void cancelar(Proposta proposta) {
-        proposta.mudarEstadoContraPara(new EstadoCanceladoContra());
+        throw new IllegalStateException("Operação inválida!");
     }
 
     @Override
     public StatusProposta getStatus() {
-        return StatusProposta.RASCUNHO;
+        return StatusProposta.CANCELADO_CONTRA;
     }
-
 }
