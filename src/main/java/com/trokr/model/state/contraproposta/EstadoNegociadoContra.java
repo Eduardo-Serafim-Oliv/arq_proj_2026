@@ -18,7 +18,7 @@ public class EstadoNegociadoContra implements EstadoContraProposta {
 
     @Override
     public void recusar(Proposta proposta) {
-        proposta.mudarEstadoContraPara(new EstadoRecusado());
+        proposta.mudarEstadoContraPara(new EstadoCanceladoContra());
     }
 
     @Override

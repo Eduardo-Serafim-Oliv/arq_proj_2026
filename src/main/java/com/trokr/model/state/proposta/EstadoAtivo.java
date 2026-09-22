@@ -23,6 +23,9 @@ public class EstadoAtivo implements EstadoProposta {
         throw new IllegalStateException("Operação inválida!");
     };
 
+    // Desativar e mudar para rascunho fazem a mesma coisa, melhor tirar uma e deixar outra,
+    // mas tenho que tirar em todas as classes e aqui, na interface.
+
     // Volta para rascunho
     @Override
     public void desativarProposta(Proposta proposta){

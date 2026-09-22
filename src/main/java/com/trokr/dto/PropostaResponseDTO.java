@@ -1,6 +1,8 @@
 package com.trokr.dto;
 
 import com.trokr.model.Proposta;
+import com.trokr.model.StatusProposta;
+
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +17,8 @@ public record PropostaResponseDTO(
         String descricao,
         Long usuarioId,
         String usuarioNome,
-        LocalDateTime dataCriacao
+        LocalDateTime dataCriacao,
+        StatusProposta status
 ) {
 
     public static PropostaResponseDTO fromEntity(Proposta proposta) {
@@ -26,7 +29,8 @@ public record PropostaResponseDTO(
                 proposta.getDescricao(),
                 proposta.getUsuarioProprietario().getId(),
                 proposta.getUsuarioProprietario().getNome(),
-                proposta.getDataCriacao()
+                proposta.getDataCriacao(),
+                proposta.getStatus()
         );
     }
 }

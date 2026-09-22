@@ -45,9 +45,6 @@ public class Proposta {
     @Column(nullable = false)
     private StatusProposta status = StatusProposta.RASCUNHO;
 
-    //    public boolean isRaiz(){
-//        return propostaAnterior == null;
-//    }
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proposta_origem_id")
     private Proposta propostaOrigem;
@@ -210,6 +207,7 @@ public class Proposta {
 
     public void aceitarContraProposta() {
         validarPropostaOriginal();
+
         estadoProposta.aceitarContraProposta(this);
     }
 
