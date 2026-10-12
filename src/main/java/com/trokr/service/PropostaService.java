@@ -5,13 +5,17 @@ import com.trokr.exception.ResourceNotFoundException;
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
 import com.trokr.model.Usuario;
+import com.trokr.model.event.TrocaConcluidaEvent;
 import com.trokr.model.state.contraproposta.EstadoRascunhoContra;
 import com.trokr.repository.PropostaRepository;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.trokr.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +25,7 @@ public class PropostaService {
     private final PropostaRepository propostaRepository;
     private final UsuarioService usuarioService;
     private final UsuarioRepository usuarioRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public List<Proposta> listarTodos() {
         return propostaRepository.findAll();
@@ -28,7 +33,7 @@ public class PropostaService {
 
     public Proposta buscarPorId(Long id) {
         return propostaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Item não encontrado com id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proposta não encontrada com id " + id));
     }
 
     public List<Proposta> listarPorTitulo(String titulo) {
@@ -72,11 +77,7 @@ public class PropostaService {
             Long propostaOrigemId,
             PropostaRequestDTO dto) {
 
-        Proposta propostaOrigem = propostaRepository
-                .findById(propostaOrigemId)
-                .orElseThrow(() ->
-                        new RuntimeException("Proposta não encontrada")
-                );
+        Proposta propostaOrigem = buscarPorId(propostaOrigemId);
 
         Usuario usuario = usuarioRepository
                 .findById(dto.usuarioId())
@@ -117,40 +118,65 @@ public class PropostaService {
                 );
     }
 
+    public Proposta enviarParaHomologacao(Long propostaId){
+
+        Proposta proposta = buscarPorId(propostaId);
+        proposta.validarPropostaOriginal().enviarParaHomologacao(proposta);
+        propostaRepository.save(proposta);
+        return proposta;
+
+    }
+
+    public Proposta voltarParaRascunho(Long propostaId){
+
+        Proposta proposta = buscarPorId(propostaId);
+        proposta.validarPropostaOriginal().voltarParaRascunho(proposta);
+        propostaRepository.save(proposta);
+        return proposta;
+
+    }
+
+    public Proposta aceitarHomologacao(Long propostaId){
+
+        Proposta proposta = buscarPorId(propostaId);
+        proposta.validarPropostaOriginal().aceitarHomologacao(proposta);
+        propostaRepository.save(proposta);
+        return proposta;
+
+    }
+
+    public Proposta desativarProposta(Long propostaId){
+
+        Proposta proposta = buscarPorId(propostaId);
+        proposta.validarPropostaOriginal().desativarProposta(proposta);
+        propostaRepository.save(proposta);
+        return proposta;
+
+    }
+
     @Transactional
     public Proposta aceitarContraProposta(
             Long propostaId,
             Long contraId) {
 
-        // Busca a proposta original
-        Proposta proposta = propostaRepository.findById(propostaId)
-                .orElseThrow(() ->
-                        new RuntimeException("Proposta não encontrada")
-                );
-
-        // Busca a contra-proposta e garante que ela pertence
-        // à proposta original informada
-        Proposta contraProposta = propostaRepository
-                .findByIdAndPropostaOrigemId(contraId, propostaId)
-                .orElseThrow(() ->
-                        new RuntimeException("Contra-proposta não encontrada")
-                );
+        Proposta proposta = buscarPorId(propostaId);
+        Proposta contraProposta = buscarContraProposta(propostaId, contraId);
 
         // Aceita a contra-proposta
-        contraProposta.aceitar();
+        contraProposta.validarContraProposta().aceitar(contraProposta);
 
         // Coloca a proposta original em negociação
-        proposta.aceitarContraProposta();
+        proposta.validarPropostaOriginal().aceitarContraProposta(proposta);
 
         // Busca todas as contra-propostas da proposta original
         List<Proposta> contraPropostas =
                 propostaRepository.findByPropostaOrigemId(propostaId);
 
-        // Remove todas as outras
+        // Recusa todas as outras
         for (Proposta contra : contraPropostas) {
 
             if (!contra.getId().equals(contraId)) {
-                contra.recusar();
+                contra.validarPropostaOriginal().cancelar(contra);
 //                ou se for deletar --> PropostaRepository.delete(contra);
             }
         }
@@ -167,31 +193,84 @@ public class PropostaService {
             Long propostaId,
             Long contraId) {
 
-        // Busca a proposta original
-        Proposta proposta = propostaRepository.findById(propostaId)
-                .orElseThrow(() ->
-                        new RuntimeException("Proposta não encontrada")
-                );
-
-        // Busca a contra-proposta e garante que ela pertence
-        // à proposta original informada
-        Proposta contraProposta = propostaRepository
-                .findByIdAndPropostaOrigemId(contraId, propostaId)
-                .orElseThrow(() ->
-                        new RuntimeException("Contra-proposta não encontrada ou não pertence à proposta informada.")
-                );
+        Proposta proposta = buscarPorId(propostaId);
+        Proposta contraProposta = buscarContraProposta(propostaId, contraId);
 
         // Finaliza a contra-proposta
-        contraProposta.finalizarContra();
+        contraProposta.validarContraProposta().finalizar(contraProposta);
 
         // Finaliza a proposta original
-        proposta.finalizarNegociacao();
+        proposta.validarPropostaOriginal().finalizarNegociacao(proposta);
 
-        // Salva as alterações
         propostaRepository.save(proposta);
         propostaRepository.save(contraProposta);
 
+        // Cria a data da conclusão
+        LocalDateTime  dataConclusao = LocalDateTime.now();
+
+        //Busca e cancela as contra-propostas em RASCUNHO e EM_ANALISE ligadas a essa proposta
+        List<Proposta> contraPropostas =
+                propostaRepository.findByPropostaOrigemId(propostaId);
+
+        for (Proposta contra : contraPropostas) {
+
+            if (!contra.getId().equals(contraId)) {
+                contra.validarContraProposta().recusar(contra);
+//                ou se for deletar --> PropostaRepository.delete(contra);
+            }
+        }
+
+        // Quem publica — injeta ApplicationEventPublisher
+        applicationEventPublisher.publishEvent(new TrocaConcluidaEvent(
+                proposta.getId(),
+                proposta.getUsuarioProprietario(),
+                contraProposta.getUsuarioProprietario(),
+                proposta,
+                contraProposta,
+                dataConclusao));
+
         return List.of(proposta, contraProposta);
     }
+
+    public Proposta enviarParaAnalise(Long propostaId, Long contraPropostaId){
+
+        Proposta contraProposta = buscarContraProposta(propostaId, contraPropostaId);
+        contraProposta.validarContraProposta().enviarParaAnalise(contraProposta);
+        propostaRepository.save(contraProposta);
+        return contraProposta;
+
+    }
+
+    public Proposta recusarProposta(Long propostaId, Long contraPropostaId){
+
+        Proposta contraProposta = buscarContraProposta(propostaId, contraPropostaId);
+        Proposta proposta = buscarPorId(propostaId);
+        contraProposta.validarContraProposta().recusar(contraProposta);
+        proposta.validarPropostaOriginal().negociacaoFalhou(proposta);
+
+        propostaRepository.save(contraProposta);
+        propostaRepository.save(proposta);
+        return contraProposta;
+
+    }
+
+    public Proposta cancelarProposta(Long propostaId){
+
+        Proposta proposta = buscarPorId(propostaId);
+        proposta.validarPropostaOriginal().cancelar(proposta);
+        propostaRepository.save(proposta);
+        return proposta;
+    }
+
+    public Proposta cancelarContraProposta(Long propostaId, Long contraId){
+
+        Proposta contraProposta = buscarContraProposta(propostaId, contraId);
+        contraProposta.validarContraProposta().cancelar(contraProposta);
+        propostaRepository.save(contraProposta);
+        return contraProposta;
+    }
+
+
+
 
 }

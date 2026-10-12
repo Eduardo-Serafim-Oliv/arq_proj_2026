@@ -19,6 +19,17 @@ spring:
       hibernate:
         format_sql: true
 
+  # Postgres — já existe, sem mudanças
+  # MongoDB — nova entrada, no mesmo nível de jpa
+  mongodb:
+    host: ${MONGO_HOST:mongo}
+    port: ${MONGO_PORT:27017}
+    database: trokr
+    username: trokr
+    password: trokr123
+    authentication-database: admin
+
+
 management:
   endpoints:
     web:

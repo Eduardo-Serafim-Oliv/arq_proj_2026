@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class PropostaController {
 
     private final PropostaService propostaService;
-    private final PropostaRepository propostaRepository;
 
     @GetMapping
     public List<PropostaResponseDTO> listar() {
@@ -124,12 +123,7 @@ public class PropostaController {
     public PropostaResponseDTO enviarParaHomologacao(
             @PathVariable Long id) {
 
-        Proposta proposta = propostaService.buscarPorId(id);
-
-        proposta.enviarParaHomologacao();
-
-        propostaRepository.save(proposta);
-
+        Proposta proposta = propostaService.enviarParaHomologacao(id);
         return PropostaResponseDTO.fromEntity(proposta);
     }
 
@@ -137,23 +131,16 @@ public class PropostaController {
     public PropostaResponseDTO aceitarHomologacao(
             @PathVariable Long id) {
 
-        Proposta proposta = propostaService.buscarPorId(id);
-
-        proposta.aceitarHomologacao();
-
-        propostaRepository.save(proposta);
-
+        Proposta proposta = propostaService.aceitarHomologacao(id);
         return PropostaResponseDTO.fromEntity(proposta);
+
     }
 
     @PatchMapping("/{id}/retornar-para-rascunho")
     public PropostaResponseDTO voltarParaRascunho(
-            @PathVariable Long id) {
+            @PathVariable Long propostaId) {
 
-        Proposta proposta = propostaService.buscarPorId(id);
-        proposta.voltarParaRascunho();
-        propostaRepository.save(proposta);
-
+        Proposta proposta = propostaService.voltarParaRascunho(propostaId);
         return PropostaResponseDTO.fromEntity(proposta);
     }
 
@@ -161,12 +148,7 @@ public class PropostaController {
     public PropostaResponseDTO desativarProposta(
             @PathVariable Long id) {
 
-        Proposta proposta = propostaService.buscarPorId(id);
-
-        proposta.desativarProposta();
-
-        propostaRepository.save(proposta);
-
+        Proposta proposta = propostaService.desativarProposta(id);
         return PropostaResponseDTO.fromEntity(proposta);
     }
 
@@ -203,16 +185,12 @@ public class PropostaController {
             @PathVariable Long propostaId,
             @PathVariable Long contraId) {
 
-        Proposta contra = propostaService.buscarContraProposta(
+        Proposta contraProposta = propostaService.enviarParaAnalise(
                 propostaId,
                 contraId
         );
 
-        contra.enviarParaAnalise();
-
-        return PropostaResponseDTO.fromEntity(
-                propostaRepository.save(contra)
-        );
+        return PropostaResponseDTO.fromEntity(contraProposta);
     }
 
     @PatchMapping("/{propostaId}/contra-propostas/{contraId}/recusar")
@@ -220,29 +198,15 @@ public class PropostaController {
             @PathVariable Long propostaId,
             @PathVariable Long contraId) {
 
-        Proposta proposta = propostaService.buscarPorId(propostaId);
-
-        Proposta contra = propostaService.buscarContraProposta(
-                propostaId,
-                contraId
-        );
-
-        proposta.negociacaoFalhou();
-        contra.recusar();
-
-        return PropostaResponseDTO.fromEntity(
-                propostaRepository.save(contra)
-        );
+        Proposta contraProposta = propostaService.recusarProposta(propostaId, contraId);
+        return PropostaResponseDTO.fromEntity(contraProposta);
     }
 
     @PatchMapping("/{id}/cancelar-proposta")
     public PropostaResponseDTO cancelarProposta(
             @PathVariable Long id) {
 
-        Proposta proposta = propostaService.buscarPorId(id);
-        proposta.cancelar();
-        propostaRepository.save(proposta);
-
+        Proposta proposta = propostaService.cancelarProposta(id);
         return PropostaResponseDTO.fromEntity(proposta);
     }
 
@@ -251,10 +215,7 @@ public class PropostaController {
             @PathVariable Long propostaId,
             @PathVariable Long contraId) {
 
-        Proposta contraProposta = propostaService.buscarContraProposta(propostaId, contraId);
-        contraProposta.cancelarContra();
-        propostaRepository.save(contraProposta);
-
+        Proposta contraProposta = propostaService.cancelarContraProposta(propostaId, contraId);
         return PropostaResponseDTO.fromEntity(contraProposta);
     }
 

@@ -4,6 +4,7 @@ import com.trokr.model.state.EstadoRecusado;
 import com.trokr.model.state.contraproposta.*;
 import com.trokr.model.state.contraproposta.EstadoEmAnalise;
 import com.trokr.model.state.proposta.*;
+import com.trokr.service.PropostaService;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -55,29 +56,14 @@ public class Proposta {
     @Transient
     private EstadoContraProposta estadoContraProposta;
 
-    public StatusProposta getStatus() {
-        return status;
-    }
 
     public void mudarEstadoPara(EstadoProposta novoEstado) {
-
-        if (isContraProposta()) {
-            throw new IllegalStateException(
-                    "Uma contra-proposta não pode utilizar o estado de uma proposta."
-            );
-        }
 
         this.estadoProposta = novoEstado;
         this.status = novoEstado.getStatus();
     }
 
     public void mudarEstadoContraPara(EstadoContraProposta novoEstado) {
-
-        if (!isContraProposta()) {
-            throw new IllegalStateException(
-                    "Uma proposta não pode utilizar o estado de uma contra-proposta."
-            );
-        }
 
         this.estadoContraProposta = novoEstado;
         this.status = novoEstado.getStatus();
@@ -102,10 +88,8 @@ public class Proposta {
         }
 
         this.propostaOrigem = propostaOrigem;
-
         this.estadoProposta = null;
         this.estadoContraProposta = new EstadoRascunhoContra();
-
         this.status = StatusProposta.RASCUNHO;
     }
 
@@ -181,99 +165,26 @@ public class Proposta {
         }
     }
 
-    // ===============================
-// ESTADO DA PROPOSTA ORIGINAL
-// ===============================
-
-    public void enviarParaHomologacao() {
-        validarPropostaOriginal();
-        estadoProposta.enviarParaHomologacao(this);
-    }
-
-    public void voltarParaRascunho() {
-        validarPropostaOriginal();
-        estadoProposta.voltarParaRascunho(this);
-    }
-
-    public void aceitarHomologacao() {
-        validarPropostaOriginal();
-        estadoProposta.aceitarHomologacao(this);
-    }
-
-    public void desativarProposta() {
-        validarPropostaOriginal();
-        estadoProposta.desativarProposta(this);
-    }
-
-    public void aceitarContraProposta() {
-        validarPropostaOriginal();
-
-        estadoProposta.aceitarContraProposta(this);
-    }
-
-    public void negociacaoFalhou() {
-        validarPropostaOriginal();
-        estadoProposta.negociacaoFalhou(this);
-    }
-
-    public void finalizarNegociacao() {
-        validarPropostaOriginal();
-        estadoProposta.finalizarNegociacao(this);
-    }
-
-    public void cancelar() {
-        validarPropostaOriginal();
-        estadoProposta.cancelar(this);
-    }
-
-
-// ===============================
-// ESTADO DA CONTRA-PROPOSTA
-// ===============================
-
-    public void enviarParaAnalise() {
-        validarContraProposta();
-        estadoContraProposta.enviarParaAnalise(this);
-    }
-
-    public void aceitar() {
-        validarContraProposta();
-        estadoContraProposta.aceitar(this);
-    }
-
-    public void recusar() {
-        validarContraProposta();
-        estadoContraProposta.recusar(this);
-    }
-
-    public void finalizarContra() {
-        validarContraProposta();
-        estadoContraProposta.finalizar(this);
-    }
-
-    public void cancelarContra() {
-        validarContraProposta();
-        estadoContraProposta.cancelar(this);
-    }
-
 
 // ===============================
 // VALIDAÇÕES
 // ===============================
 
-    private void validarPropostaOriginal() {
+    public EstadoProposta validarPropostaOriginal() {
         if (isContraProposta()) {
             throw new IllegalStateException(
                     "Operação válida somente para proposta original."
             );
         }
+        return estadoProposta;
     }
 
-    private void validarContraProposta() {
+    public EstadoContraProposta validarContraProposta() {
         if (!isContraProposta()) {
             throw new IllegalStateException(
                     "Operação válida somente para contra-proposta."
             );
         }
+        return estadoContraProposta;
     }
 }
