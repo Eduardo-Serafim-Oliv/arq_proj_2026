@@ -42,11 +42,11 @@ public class PropostaController {
                 .toList();
     }
 
-    @GetMapping("/buscar-tipo")
-    public List<PropostaResponseDTO> listarPorTipo(
-            @RequestParam("tipo") String tipo) {
+    @GetMapping("/buscar-categoria")
+    public List<PropostaResponseDTO> listarPorCategoria(
+            @RequestParam("categoria") String categoria) {
 
-        return propostaService.listarPorTipo(tipo).stream()
+        return propostaService.listarPorCategoria(categoria).stream()
                 .map(PropostaResponseDTO::fromEntity)
                 .toList();
     }
@@ -68,7 +68,7 @@ public class PropostaController {
 
         proposta.setTitulo(dto.titulo());
         proposta.setDescricao(dto.descricao());
-        proposta.setTipo(dto.tipo());
+        proposta.setCategoria(dto.categoria());
 
         Proposta salvo =
                 propostaService.criar(proposta, dto.usuarioId());
@@ -100,7 +100,7 @@ public class PropostaController {
 
         dadosAtualizados.setTitulo(dto.titulo());
         dadosAtualizados.setDescricao(dto.descricao());
-        dadosAtualizados.setTipo(dto.tipo());
+        dadosAtualizados.setCategoria(dto.categoria());
         dadosAtualizados.setStatus(dto.status());
 
         return PropostaResponseDTO.fromEntity(

@@ -3,10 +3,8 @@ package com.trokr.service;
 import com.trokr.dto.PropostaRequestDTO;
 import com.trokr.exception.ResourceNotFoundException;
 import com.trokr.model.Proposta;
-import com.trokr.model.StatusProposta;
 import com.trokr.model.Usuario;
-import com.trokr.model.event.TrocaConcluidaEvent;
-import com.trokr.model.state.contraproposta.EstadoRascunhoContra;
+import com.trokr.event.TrocaConcluidaEvent;
 import com.trokr.repository.PropostaRepository;
 
 import java.time.LocalDateTime;
@@ -39,8 +37,8 @@ public class PropostaService {
     public List<Proposta> listarPorTitulo(String titulo) {
         return propostaRepository.findByTituloContainingIgnoreCase(titulo);
     }
-    public List<Proposta> listarPorTipo(String tipo) {
-        return propostaRepository.findByTipoIgnoreCase(tipo);
+    public List<Proposta> listarPorCategoria(String categoria) {
+        return propostaRepository.findByCategoriaIgnoreCase(categoria);
     }
     public List<Proposta> listarPorUsuarioProprietario(Long usuarioId) {
         return propostaRepository.findByUsuarioProprietarioId(usuarioId);
@@ -57,7 +55,7 @@ public class PropostaService {
         Usuario dono = usuarioService.buscarPorId(usuarioId);
         propostaExistente.setTitulo(dadosAtualizados.getTitulo());
         propostaExistente.setDescricao(dadosAtualizados.getDescricao());
-        propostaExistente.setTipo(dadosAtualizados.getTipo());
+        propostaExistente.setCategoria(dadosAtualizados.getCategoria());
         propostaExistente.setStatus(dadosAtualizados.getStatus());
         propostaExistente.setUsuarioProprietario(dono);
         return propostaRepository.save(propostaExistente);
@@ -97,7 +95,7 @@ public class PropostaService {
 
         contraProposta.setTitulo(dto.titulo());
         contraProposta.setDescricao(dto.descricao());
-        contraProposta.setTipo(dto.tipo());
+        contraProposta.setCategoria(dto.categoria());
         contraProposta.setUsuarioProprietario(usuario);
 
         contraProposta.configurarComoContraProposta(propostaOrigem);

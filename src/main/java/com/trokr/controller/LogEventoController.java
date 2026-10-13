@@ -1,6 +1,6 @@
 package com.trokr.controller;
 
-import com.trokr.adapter.LogEventoService;
+import com.trokr.service.LogEventoService;
 import com.trokr.dto.LogEventoResponseDTO;
 
 import java.util.List;

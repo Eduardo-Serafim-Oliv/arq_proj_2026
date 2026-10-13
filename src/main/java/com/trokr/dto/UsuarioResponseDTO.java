@@ -12,7 +12,8 @@ public record UsuarioResponseDTO(
         Long id,
         String nome,
         String email,
-        LocalDateTime dataCriacao
+        LocalDateTime dataCriacao,
+        Integer saldoCreditos
 ) {
 
     public static UsuarioResponseDTO fromEntity(Usuario usuario) {
@@ -20,7 +21,8 @@ public record UsuarioResponseDTO(
                 usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getDataCriacao()
+                usuario.getDataCriacao(),
+                usuario.getSaldoCreditos()
         );
     }
 }

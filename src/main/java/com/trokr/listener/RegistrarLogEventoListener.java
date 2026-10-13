@@ -1,7 +1,7 @@
-package com.trokr.model.listener;
+package com.trokr.listener;
 
-import com.trokr.adapter.LogEventoService;
-import com.trokr.model.event.TrocaConcluidaEvent;
+import com.trokr.service.LogEventoService;
+import com.trokr.event.TrocaConcluidaEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;

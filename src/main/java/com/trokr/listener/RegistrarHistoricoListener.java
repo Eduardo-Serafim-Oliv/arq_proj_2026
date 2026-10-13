@@ -1,8 +1,8 @@
-package com.trokr.model.listener;
+package com.trokr.listener;
 
 import com.trokr.model.Historico;
 import com.trokr.model.StatusProposta;
-import com.trokr.model.event.TrocaConcluidaEvent;
+import com.trokr.event.TrocaConcluidaEvent;
 import com.trokr.repository.HistoricoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

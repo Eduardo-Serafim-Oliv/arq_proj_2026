@@ -1,8 +1,10 @@
-package com.trokr.adapter;
+package com.trokr.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.trokr.adapter.LogEvento;
+import com.trokr.adapter.NivelLog;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface LogEventoRepository

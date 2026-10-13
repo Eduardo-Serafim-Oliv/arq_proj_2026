@@ -31,8 +31,10 @@ public class Proposta {
     @Column(nullable = false)
     private String descricao;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String tipo;
+    private CategoriaProposta categoria;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)

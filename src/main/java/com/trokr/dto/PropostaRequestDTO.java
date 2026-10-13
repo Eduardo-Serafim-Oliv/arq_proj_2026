@@ -1,5 +1,6 @@
 package com.trokr.dto;
 
+import com.trokr.model.CategoriaProposta;
 import com.trokr.model.StatusProposta;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,9 +22,10 @@ public record PropostaRequestDTO(
         @NotNull(message = "usuarioId é obrigatório")
         Long usuarioId,
 
-        @NotNull(message = "tipo é obrigatório")
-        String tipo,
+        StatusProposta status,
 
-        StatusProposta status
+        @NotNull(message = "A categoria é obrigatória")
+        CategoriaProposta categoria
+
 ) {
 }

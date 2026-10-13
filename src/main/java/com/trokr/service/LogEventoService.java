@@ -1,10 +1,13 @@
-package com.trokr.adapter;
+package com.trokr.service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.trokr.adapter.LogEvento;
+import com.trokr.adapter.NivelLog;
+import com.trokr.adapter.RegistroDeEventos;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;

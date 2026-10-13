@@ -1,4 +1,4 @@
-package com.trokr.model.event;
+package com.trokr.event;
 
 import com.trokr.model.Proposta;
 import com.trokr.model.Usuario;
