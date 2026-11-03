@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.trokr.adapter.LogEvento;
+import com.trokr.exception.GlobalExceptionHandler;
+import com.trokr.model.LogEvento;
 import com.trokr.adapter.NivelLog;
 import com.trokr.adapter.RegistroDeEventos;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,16 @@ public class LogEventoService {
         payload.put("mensagemExcecao", String.valueOf(excecao.getMessage()));
 
         registroDeEventos.registrar(tipo, NivelLog.ERROR, origem, mensagem, payload);
+    }
+
+    public void registrarAviso(String tipo, String origem, String mensagem, Exception excecao) {
+
+        Map<String, Object> payload = new HashMap<>();
+
+        payload.put("tipoExcecao", excecao.getClass().getName());
+        payload.put("mensagemExcecao", String.valueOf(excecao.getMessage()));
+
+        registroDeEventos.registrar(tipo, NivelLog.WARN, origem, mensagem, payload);
     }
 
     public List<LogEvento> listarPorTipo(String tipo) {

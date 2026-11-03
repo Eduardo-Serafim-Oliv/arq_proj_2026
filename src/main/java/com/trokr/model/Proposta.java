@@ -52,6 +52,10 @@ public class Proposta {
     @JoinColumn(name = "proposta_origem_id")
     private Proposta propostaOrigem;
 
+    @Version
+    @Column(nullable = false)
+    private Long versao = 0L;
+
     @Transient
     private EstadoProposta estadoProposta = new EstadoRascunho();
 

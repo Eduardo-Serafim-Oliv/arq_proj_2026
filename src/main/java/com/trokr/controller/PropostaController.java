@@ -70,8 +70,7 @@ public class PropostaController {
         proposta.setDescricao(dto.descricao());
         proposta.setCategoria(dto.categoria());
 
-        Proposta salvo =
-                propostaService.criar(proposta, dto.usuarioId());
+        Proposta salvo = propostaService.criar(proposta, dto.usuarioId());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

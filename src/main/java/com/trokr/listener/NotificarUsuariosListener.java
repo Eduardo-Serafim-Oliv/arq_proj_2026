@@ -4,12 +4,14 @@ import com.trokr.event.TrocaConcluidaEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
 public class NotificarUsuariosListener {
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void aoConcluirTroca(TrocaConcluidaEvent evento) {
 
         String mensagem = String.format(
@@ -23,7 +25,5 @@ public class NotificarUsuariosListener {
         );
 
         System.out.println(mensagem);
-//        log.info(mensagem);
-
     }
 }

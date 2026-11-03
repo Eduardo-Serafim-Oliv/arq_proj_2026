@@ -1,6 +1,6 @@
 package com.trokr.dto;
 
-import com.trokr.adapter.LogEvento;
+import com.trokr.model.LogEvento;
 import com.trokr.adapter.NivelLog;
 
 import java.time.LocalDateTime;

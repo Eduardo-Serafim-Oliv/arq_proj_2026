@@ -1,5 +1,6 @@
 package com.trokr.listener;
 
+import com.trokr.config.AtrasoDemo;
 import com.trokr.model.Usuario;
 import com.trokr.event.TrocaConcluidaEvent;
 import com.trokr.repository.UsuarioRepository;
@@ -17,6 +18,8 @@ public class AtribuirCreditosListener {
 
     private final CalculadoraCreditoService calculadora;
     private final UsuarioRepository usuarioRepository;
+    private final AtrasoDemo atrasoDemontracao;
+
 
     @EventListener
     @Transactional
@@ -41,18 +44,15 @@ public class AtribuirCreditosListener {
         // Usuário B recebe créditos pela contra-proposta que ofereceu
         int creditosB = calculadora.calcular(evento.getPropostaB());
 
+        // Ponto onde a janela deve abrir para que ocorra conconrrência no saldo:
+        // Para usar, mude o atraso no application.yml
+        atrasoDemontracao.aplicar();
+
         // Atualiza os saldos
-        usuarioA.setSaldoCreditos(
-                usuarioA.getSaldoCreditos() + creditosA
-        );
+        // Agora com UPDATE atômico, utilizando uma query direta no repository:
 
-        usuarioB.setSaldoCreditos(
-                usuarioB.getSaldoCreditos() + creditosB
-        );
+        usuarioRepository.adicionarCreditos(usuarioA.getId(), creditosA);
+        usuarioRepository.adicionarCreditos(usuarioB.getId(), creditosB);
 
-        // Salva os dois usuários
-        usuarioRepository.saveAll(
-                List.of(usuarioA, usuarioB)
-        );
     }
 }

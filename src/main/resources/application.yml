@@ -37,3 +37,7 @@ management:
         # Expor só o necessário nesta fase: health (usado como /health do
         # enunciado) e info. Nada de segurança/autenticação em cima disso ainda.
         include: health,info
+
+trokr:
+  demo:
+    atraso-ms: 0

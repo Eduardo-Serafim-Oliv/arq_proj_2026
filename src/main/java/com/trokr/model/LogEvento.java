@@ -1,8 +1,9 @@
-package com.trokr.adapter;
+package com.trokr.model;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.trokr.adapter.NivelLog;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

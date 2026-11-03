@@ -1,5 +1,6 @@
 package com.trokr.service;
 
+import com.trokr.config.AtrasoDemo;
 import com.trokr.dto.PropostaRequestDTO;
 import com.trokr.exception.ResourceNotFoundException;
 import com.trokr.model.Proposta;
@@ -13,6 +14,7 @@ import java.util.List;
 import com.trokr.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class PropostaService {
     private final UsuarioService usuarioService;
     private final UsuarioRepository usuarioRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final AtrasoDemo atrasoDemontracao;
 
     public List<Proposta> listarTodos() {
         return propostaRepository.findAll();
@@ -200,6 +203,9 @@ public class PropostaService {
         // Finaliza a proposta original
         proposta.validarPropostaOriginal().finalizarNegociacao(proposta);
 
+        // Ponto onde a janela deve abrir:
+        atrasoDemontracao.aplicar();
+
         propostaRepository.save(proposta);
         propostaRepository.save(contraProposta);
 
@@ -217,6 +223,9 @@ public class PropostaService {
 //                ou se for deletar --> PropostaRepository.delete(contra);
             }
         }
+
+       // TODO: um listener AFTER_ROLLBACK no mesmo evento pode registrar no LogEvento
+        //  que houve uma finalização concorrente recusada (Slide 38, Aula 10).
 
         // Quem publica — injeta ApplicationEventPublisher
         applicationEventPublisher.publishEvent(new TrocaConcluidaEvent(

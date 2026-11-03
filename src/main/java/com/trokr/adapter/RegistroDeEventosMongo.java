@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.trokr.model.LogEvento;
 import com.trokr.repository.LogEventoRepository;
 import lombok.RequiredArgsConstructor;
 
