@@ -2,6 +2,10 @@ spring:
   application:
     name: trokr
 
+  mvc:
+    problemdetails:
+      enabled: true
+
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:trokr_db}
     username: ${DB_USER:trokr_user}
@@ -40,4 +44,14 @@ management:
 
 trokr:
   demo:
+    endpoints: true
     atraso-ms: 0
+
+    #${TROKR_DEMO_ATRASO_MS:${TROKR_DEMO_ATRASOMS:0}}
+    #endpoints
+
+  notificacao:
+      max-tentativas: 3
+      espera-inicial-ms: 200
+      latencia-ms: 500
+      taxa-falha: 0.5

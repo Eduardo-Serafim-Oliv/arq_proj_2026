@@ -2,7 +2,8 @@ package com.trokr.service;
 
 import com.trokr.config.AtrasoDemo;
 import com.trokr.dto.PropostaRequestDTO;
-import com.trokr.exception.ResourceNotFoundException;
+import com.trokr.exception.RecursoNaoEncontradoException;
+import com.trokr.exception.RegraNegocioException;
 import com.trokr.model.Proposta;
 import com.trokr.model.Usuario;
 import com.trokr.event.TrocaConcluidaEvent;
@@ -14,7 +15,6 @@ import java.util.List;
 import com.trokr.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,8 @@ public class PropostaService {
 
     public Proposta buscarPorId(Long id) {
         return propostaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proposta não encontrada com id " + id));
+                .orElseThrow(() ->
+                    new RecursoNaoEncontradoException("PROPOSTA_NAO_ENCONTRADA", "Proposta não encontrada com id: " + id));
     }
 
     public List<Proposta> listarPorTitulo(String titulo) {
@@ -83,14 +84,14 @@ public class PropostaService {
         Usuario usuario = usuarioRepository
                 .findById(dto.usuarioId())
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado")
+                        new RecursoNaoEncontradoException("Usuário não encontrado com id " + dto.usuarioId(), "USUARIO_NAO_ENCONTRADO")
                 );
 
         if (propostaOrigem.getUsuarioProprietario().getId()
                 .equals(usuario.getId())) {
 
-            throw new IllegalStateException(
-                    "O dono da proposta não pode criar uma contra-proposta."
+            throw new RegraNegocioException(
+                    "CONTRAPROPOSTA_NA_PROPRIA_PROPOSTA", "O dono da proposta não pode se contrapropor."
             );
         }
 
@@ -113,10 +114,7 @@ public class PropostaService {
         return propostaRepository
                 .findByIdAndPropostaOrigemId(contraId, propostaId)
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Contra-proposta não encontrada."
-                        )
-                );
+                        new RecursoNaoEncontradoException("Contra-proposta não encontrada com id " + contraId, "CONTRA-PROPOSTA_NAO_ENCONTRADA"));
     }
 
     public Proposta enviarParaHomologacao(Long propostaId){

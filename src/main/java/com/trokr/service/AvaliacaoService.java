@@ -1,5 +1,6 @@
 package com.trokr.service;
 
+import com.trokr.exception.RecursoNaoEncontradoException;
 import com.trokr.model.Avaliacao;
 import com.trokr.repository.AvaliacaoRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ public class AvaliacaoService {
     public Avaliacao buscarPorId(Long id) {
         return avaliacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Avaliação não encontrada")
+                        new RecursoNaoEncontradoException("AVALIACAO_NAO_ENCONTRADA","Avaliação não encontrada com o id: " + id)
                 );
     }
 

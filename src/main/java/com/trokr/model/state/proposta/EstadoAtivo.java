@@ -1,5 +1,6 @@
 package com.trokr.model.state.proposta;
 
+import com.trokr.exception.TransicaoInvalidaException;
 import com.trokr.model.Proposta;
 import com.trokr.model.StatusProposta;
 
@@ -8,7 +9,7 @@ public class EstadoAtivo implements EstadoProposta {
     //Avança para homologação
     @Override
     public void enviarParaHomologacao(Proposta proposta){
-        throw new IllegalStateException("Operação inválida!");
+        throw new TransicaoInvalidaException(this.getStatus(), StatusProposta.HOMOLOGACAO);
     };
 
     // Volta para rascunho
@@ -20,10 +21,10 @@ public class EstadoAtivo implements EstadoProposta {
     // Avança para ativar
     @Override
     public void aceitarHomologacao(Proposta proposta){
-        throw new IllegalStateException("Operação inválida!");
+        throw new TransicaoInvalidaException(this.getStatus(), StatusProposta.ATIVO);
     };
 
-    // Desativar e mudar para rascunho fazem a mesma coisa, melhor tirar uma e deixar outra,
+    // TODO: Desativar e mudar para rascunho fazem a mesma coisa, melhor tirar uma e deixar outra,
     // mas tenho que tirar em todas as classes e aqui, na interface.
 
     // Volta para rascunho
@@ -41,14 +42,14 @@ public class EstadoAtivo implements EstadoProposta {
     // Volta para ativa
     @Override
     public void negociacaoFalhou(Proposta proposta){
-        throw new IllegalStateException("Operação inválida!");
+        throw new TransicaoInvalidaException(this.getStatus(), StatusProposta.ATIVO);
 
     };
 
     // Avança para finalizado
     @Override
     public void finalizarNegociacao(Proposta proposta){
-        throw new IllegalStateException("Operação inválida!");
+        throw new TransicaoInvalidaException(this.getStatus(), StatusProposta.FINALIZADO);
 
     };
 

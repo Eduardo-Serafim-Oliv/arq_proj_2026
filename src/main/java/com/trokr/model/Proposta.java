@@ -1,6 +1,5 @@
 package com.trokr.model;
 
-import com.trokr.model.state.EstadoRecusado;
 import com.trokr.model.state.contraproposta.*;
 import com.trokr.model.state.contraproposta.EstadoEmAnalise;
 import com.trokr.model.state.proposta.*;

@@ -33,7 +33,7 @@ public class PropostaController {
         );
     }
 
-    @GetMapping("/buscar")
+    @GetMapping("/buscar-por-titulo")
     public List<PropostaResponseDTO> listarPorTitulo(
             @RequestParam("titulo") String titulo) {
 
@@ -42,7 +42,7 @@ public class PropostaController {
                 .toList();
     }
 
-    @GetMapping("/buscar-categoria")
+    @GetMapping("/buscar-por-categoria")
     public List<PropostaResponseDTO> listarPorCategoria(
             @RequestParam("categoria") String categoria) {
 
@@ -137,9 +137,9 @@ public class PropostaController {
 
     @PatchMapping("/{id}/retornar-para-rascunho")
     public PropostaResponseDTO voltarParaRascunho(
-            @PathVariable Long propostaId) {
+            @PathVariable Long id) {
 
-        Proposta proposta = propostaService.voltarParaRascunho(propostaId);
+        Proposta proposta = propostaService.voltarParaRascunho(id);
         return PropostaResponseDTO.fromEntity(proposta);
     }
 

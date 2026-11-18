@@ -1,6 +1,6 @@
 package com.trokr.service;
 
-import com.trokr.exception.ResourceNotFoundException;
+import com.trokr.exception.RecursoNaoEncontradoException;
 import com.trokr.model.Usuario;
 import com.trokr.repository.UsuarioRepository;
 import java.util.List;
@@ -25,11 +25,11 @@ public class UsuarioService {
 
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario não encontrado com id " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("USUARIO_NAO_ENCONTRADO", "Usuario não encontrado com id " + id));
     }
     public Usuario buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com email: " + email));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("USUARIO_NAO_ENCONTRADO", "Usuario não encontrado com o email " + email));
     }
 
     public Usuario criar(Usuario usuario) {

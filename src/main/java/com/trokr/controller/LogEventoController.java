@@ -1,5 +1,6 @@
 package com.trokr.controller;
 
+import com.trokr.dto.UsuarioResponseDTO;
 import com.trokr.service.LogEventoService;
 import com.trokr.dto.LogEventoResponseDTO;
 
@@ -23,11 +24,19 @@ public class LogEventoController {
     // ============================================================
 
     @GetMapping
+    @RequestMapping("/logs/tipo")
     public List<LogEventoResponseDTO> listarPorTipo(
             @RequestParam String tipo
     ) {
         return logEventoService.listarPorTipo(tipo)
                 .stream()
+                .map(LogEventoResponseDTO::fromEntity)
+                .toList();
+    }
+
+    @GetMapping
+    public List<LogEventoResponseDTO> listarTodos() {
+        return logEventoService.listarTodos().stream()
                 .map(LogEventoResponseDTO::fromEntity)
                 .toList();
     }
